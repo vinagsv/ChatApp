@@ -11,12 +11,12 @@
 //   socket: null,
 //   onlineUsers: [],
 
-//   setSelectedUser: (selectedUser) => ({ selectedUser }),
+//   setSelectedUser: (selectedUser) => set({ selectedUser }),
 
 //   getUsers: async (token) => {
 //     set({ isUsersLoading: true });
 //     try {
-//       const res = await axios.get(`http://localhost:7000/api/users/getall`, {
+//       const res = await axios.get("http://localhost:7000/api/users/getall", {
 //         headers: {
 //           Authorization: `Bearer ${token}`,
 //         },
@@ -40,6 +40,7 @@
 //           },
 //         }
 //       );
+
 //       set({ messages: res.data });
 //     } catch (error) {
 //       console.error(
@@ -52,14 +53,11 @@
 
 //   sendMessages: async (messageData, token) => {
 //     const { selectedUser, messages } = get();
-
 //     try {
 //       const res = await axios.post(
 //         `http://localhost:7000/api/messages/send/${selectedUser.clerkUserId}`,
 //         messageData,
-//         {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }
+//         { headers: { Authorization: `Bearer ${token}` } }
 //       );
 
 //       const newMessage = res.data;
@@ -70,8 +68,8 @@
 //     }
 //   },
 
-//   // https://socket.io/docs/v4/client-api/
-//   initializeSocket: (userId) => {
+//   //   https://socket.io/docs/v4/client-api/
+//   initalizeSocket: (userId) => {
 //     if (get().socket) return get().socket;
 //     const socket = io("http://localhost:7000", {
 //       query: { userId: userId },
@@ -84,7 +82,6 @@
 //     set({ socket });
 //     return socket;
 //   },
-
 //   disconnectSocket: () => {
 //     const { socket } = get();
 //     if (socket) {
@@ -97,8 +94,7 @@
 //     const { selectedUser, socket } = get();
 //     if (!selectedUser || !socket) return;
 //     socket.off("newMessage");
-
-//     socket.on("newMessages", (newMessage) => {
+//     socket.on("newMessage", (newMessage) => {
 //       const isFromSelected =
 //         newMessage.fromClerkId === selectedUser.clerkUserId;
 //       const isDuplicate = get().messages.some(
@@ -116,11 +112,10 @@
 //   },
 // }));
 
-// =======================================
-
 import { create } from "zustand";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { axiosInstance } from "../LIBS/axios";
 
 export const useChatStore = create((set, get) => ({
   messages: [],
@@ -136,7 +131,7 @@ export const useChatStore = create((set, get) => ({
   getUsers: async (token) => {
     set({ isUsersLoading: true });
     try {
-      const res = await axios.get("http://localhost:7000/api/users/getall", {
+      const res = await axiosInstance.get("/api/users/getall", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -152,7 +147,7 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (userId, token) => {
     set({ isMessagesLoading: true });
     try {
-      const res = await axios.get(
+      const res = await axiosInstance.get(
         `http://localhost:7000/api/messages/${userId}`,
         {
           headers: {
@@ -174,7 +169,7 @@ export const useChatStore = create((set, get) => ({
   sendMessages: async (messageData, token) => {
     const { selectedUser, messages } = get();
     try {
-      const res = await axios.post(
+      const res = await axiosInstance.post(
         `http://localhost:7000/api/messages/send/${selectedUser.clerkUserId}`,
         messageData,
         { headers: { Authorization: `Bearer ${token}` } }

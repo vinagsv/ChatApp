@@ -1,9 +1,23 @@
+import { useEffect, useState } from "react";
+
 export default function DarkMode() {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "retro");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "dark" ? "retro" : "dark"));
+  };
+
   return (
     <label className="grid cursor-pointer place-items-center">
       <input
         type="checkbox"
-        value="synthwave"
+        onChange={toggleTheme}
+        checked={theme === "dark"}
         className="toggle theme-controller bg-base-content col-span-2 col-start-1 row-start-1"
       />
       <svg

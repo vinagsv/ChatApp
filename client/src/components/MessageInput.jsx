@@ -1,6 +1,7 @@
 import { Image, Send, X } from "lucide-react";
+
 import styles from "../Styles/MessageInput.module.css";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
@@ -20,7 +21,7 @@ const MessageInput = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less that 5MB");
+        toast.error("Image size should be less than 5MB");
         return;
       }
       setImage(file);
@@ -46,7 +47,7 @@ const MessageInput = () => {
     if (!token) return;
     const formData = new FormData();
     if (text) formData.append("text", text);
-    if (image) formData.append("image", text);
+    if (image) formData.append("image", image);
 
     await sendMessages(formData, token);
     setText("");
@@ -91,6 +92,7 @@ const MessageInput = () => {
         />
         <input
           type="text"
+          //   value={dummyText}
           value={text}
           placeholder="Type a message..."
           className={styles.textInput}

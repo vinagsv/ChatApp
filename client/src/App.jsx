@@ -18,7 +18,7 @@ function App() {
           <Route path="/main/*" element={<SignedIn />} />
         </Routes>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

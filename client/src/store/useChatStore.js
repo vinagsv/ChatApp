@@ -147,14 +147,11 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (userId, token) => {
     set({ isMessagesLoading: true });
     try {
-      const res = await axiosInstance.get(
-        `http://localhost:7000/api/messages/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.get(`/api/messages/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       set({ messages: res.data });
     } catch (error) {
@@ -170,7 +167,7 @@ export const useChatStore = create((set, get) => ({
     const { selectedUser, messages } = get();
     try {
       const res = await axiosInstance.post(
-        `http://localhost:7000/api/messages/send/${selectedUser.clerkUserId}`,
+        `/api/messages/send/${selectedUser.clerkUserId}`,
         messageData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -186,7 +183,7 @@ export const useChatStore = create((set, get) => ({
   //   https://socket.io/docs/v4/client-api/
   initalizeSocket: (userId) => {
     if (get().socket) return get().socket;
-    const socket = io("http://localhost:7000", {
+    const socket = io(import.meta.env.VITE_BASE_URL, {
       query: { userId: userId },
     });
     socket.on("connect", () => console.log("Connected to the socket server"));
